@@ -38,29 +38,29 @@ def monitor_interest(graph):
         node2 = edge[1]
         graph[node1][node2]["weight"] = 0
         assert (
-            0 <= len(graph[node1]["topInterests"]) <= MAX_POSIBLE_TOPINTERESTS
-        ) and (0 <= len(graph[node2]["topInterests"]) <= MAX_POSIBLE_TOPINTERESTS), (
+            0 <= len(graph.nodes[node1]["topInterests"]) <= MAX_POSIBLE_TOPINTERESTS
+        ) and (0 <= len(graph.nodes[node2]["topInterests"]) <= MAX_POSIBLE_TOPINTERESTS), (
             "At least one of the nodes of the edge has a not valid number of "
             + "'topInterest' elements."
-            + str(graph[node1]["topInterests"])
-            + str(graph[node2]["topInterests"])
+            + str(graph.nodes[node1]["topInterests"])
+            + str(graph.nodes[node2]["topInterests"])
         )
         # In every edge we look if an interest of one of the node is in the
         # interests of the other node of the edge.
-        for interest in graph[node1]["topInterests"]:
-            if interest in graph[node2]["topInterests"]:
-                # If the interest is in the secind node we augment the weight
+        for interest in graph.nodes[node1]["topInterests"]:
+            if interest in graph.nodes[node2]["topInterests"]:
+                # If the interest is in the second node we augment the weight
                 # of the edge by one.
                 graph[node1][node2]["weight"] += 1
-        assert 0 <= len(graph[node1][node2]["weight"]) <= MAX_POSIBLE_TOPINTERESTS, (
+        assert 0 <= graph[node1][node2]["weight"] <= MAX_POSIBLE_TOPINTERESTS, (
             "Weight of the edge is not in the expected range."
-            + str(len(graph[node1][node2]["weight"]))
+            + str(graph[node1][node2]["weight"])
         )
         #  If after procesing the common interest of both nodes the weight
         # remains 0, we can delete the edge. Saves time because we know that
         # the edge will not increase its weight in te future (an edge only have
         # two nodes), and we do not have to iterate over every edge another
         # time to checks its weight and delete it.
-        if len(graph[node1][node2]["weight"]) == 0:
+        if graph[node1][node2]["weight"] == 0:
             graph.remove_edge(node1, node2)
     return graph
