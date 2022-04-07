@@ -12,7 +12,7 @@ import networkx
 MAX_POSIBLE_TOPINTERESTS = 5
 
 
-def monitor_interest(graph):
+def monitor_interests(graph):
     """
     Given a networkx graph where every node has a property "topInterest" (list
     of element between 0 and 5), and weights ever edge depending on the number
@@ -39,7 +39,9 @@ def monitor_interest(graph):
         graph[node1][node2]["weight"] = 0
         assert (
             0 <= len(graph.nodes[node1]["topInterests"]) <= MAX_POSIBLE_TOPINTERESTS
-        ) and (0 <= len(graph.nodes[node2]["topInterests"]) <= MAX_POSIBLE_TOPINTERESTS), (
+        ) and (
+            0 <= len(graph.nodes[node2]["topInterests"]) <= MAX_POSIBLE_TOPINTERESTS
+        ), (
             "At least one of the nodes of the edge has a not valid number of "
             + "'topInterest' elements."
             + str(graph.nodes[node1]["topInterests"])
@@ -64,3 +66,18 @@ def monitor_interest(graph):
         if graph[node1][node2]["weight"] == 0:
             graph.remove_edge(node1, node2)
     return graph
+
+
+def remove_subdivisions(graph: networkx.Graph):
+    raise NotImplementedError
+    return graph
+
+
+def contains_K5(graph: networkx.Graph):
+    raise NotImplementedError
+    return bool
+
+
+def contains_K33(graph: networkx.Graph):
+    raise NotImplementedError
+    return bool
