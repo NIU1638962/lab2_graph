@@ -2,9 +2,11 @@
 """
 Created on Thu Mar 24 08:25:11 2022
 
-@author: Joel Tapia Salvador
+@author: Joel Tapia Salvador, Thijs Rood
 """
 import networkx
+import random
+import matplotlib.pyplot as plt
 
 
 #  Generalization to make easy to edit the code if it is changed the maximum
@@ -67,17 +69,60 @@ def monitor_interests(graph):
             graph.remove_edge(node1, node2)
     return graph
 
+def luckydraw_simulation(n, k, v):
+    # some platonic solids have either 4, 6, 8, 12 or 20 faces
+    total = 0
+
+    assert (k in [4, 6, 8, 12, 20])
+
+    for _ in range(n):
+        total += random.randint(0,k)
+
+    
+    return
+
 
 def remove_subdivisions(graph: networkx.Graph):
-    raise NotImplementedError
+    
+    # loop over nodes
+    for node in list(graph.nodes):
+
+        if len(graph.adj[node]) == 2:
+            nodelist = list(graph.adj[node])
+            print('added edge: ' + str(nodelist[0]) + ' ' + str(nodelist[1]))
+            graph.add_edge(nodelist[0], nodelist[1])
+            print('removed node ' + str(node))
+            graph.remove_node(node)
+
+
+
     return graph
 
-
 def contains_K5(graph: networkx.Graph):
-    raise NotImplementedError
-    return bool
 
+    k5 = networkx.complete_graph(5)    
+    g = remove_subdivisions(graph)
+    
+    return not networkx.is_isomorphic(g, k5) 
 
 def contains_K33(graph: networkx.Graph):
-    raise NotImplementedError
-    return bool
+
+    k33 = networkx.complete_bipartite_graph(3,3)
+    g = remove_subdivisions(graph)
+
+    return not networkx.is_isomorphic(g, k33)
+
+# # quick testing
+G = networkx.Graph()
+G.add_nodes_from([1, 2, 3, 4])
+G.add_edges_from([(1,2),(1,3),(1,4),(3,4)])
+# #print(remove_subdivisions(G))
+
+print("Should return False:")
+print(contains_K33(networkx.complete_bipartite_graph(3,3)))
+print("Should return False:")
+print(contains_K5(networkx.complete_graph(5)))
+print("Should return False: (not sure)")
+print(contains_K33(networkx.petersen_graph()))
+print("Should return False")
+print(contains_K33(networkx.complete_graph(10)))
