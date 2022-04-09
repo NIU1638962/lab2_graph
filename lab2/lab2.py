@@ -7,6 +7,7 @@ Created on Thu Mar 24 08:25:11 2022
 import networkx
 import random
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 #  Generalization to make easy to edit the code if it is changed the maximum
@@ -69,18 +70,41 @@ def monitor_interests(graph):
             graph.remove_edge(node1, node2)
     return graph
 
-def luckydraw_simulation(n, k, v):
-    # some platonic solids have either 4, 6, 8, 12 or 20 faces
-    total = 0
 
+"""
+We have n dice with k sides with k being platonic.
+Order is not neccecary so ther are k^n possibilities.
+"""
+def luckydraw_table(n):
+
+    # some platonic solids have either 4, 6, 8, 12 or 20 faces
     assert (k in [4, 6, 8, 12, 20])
 
-    for _ in range(n):
-        total += random.randint(0,k)
+    # set total to 0
+    table = [] 
 
-    
+    # rows in the table should range from n to n+9
+    for k in [4, 6, 8, 12, 20]:
+        krow = []
+        for i in range(n, n+9):
+            #row = []
+            total = 0
+            for _ in range(i):
+                total = k**i
+                #row.append(total)
+            krow.append(total)
+            
+        table.append(krow)
+    df = pd.DataFrame(table, index=[k for k in [4, 6, 8, 12, 20]], columns=[str(i) for i in range(n, n+9)])
+
+    print(df)
+    return df
+
+
+luckydraw_table(5)
+
+def luckydraw_simulation():
     return
-
 
 def remove_subdivisions(graph: networkx.Graph):
     
@@ -112,17 +136,17 @@ def contains_K33(graph: networkx.Graph):
 
     return not networkx.is_isomorphic(g, k33)
 
-# # quick testing
-G = networkx.Graph()
-G.add_nodes_from([1, 2, 3, 4])
-G.add_edges_from([(1,2),(1,3),(1,4),(3,4)])
-# #print(remove_subdivisions(G))
+# # # quick testing
+# G = networkx.Graph()
+# G.add_nodes_from([1, 2, 3, 4])
+# G.add_edges_from([(1,2),(1,3),(1,4),(3,4)])
+# # #print(remove_subdivisions(G))
 
-print("Should return False:")
-print(contains_K33(networkx.complete_bipartite_graph(3,3)))
-print("Should return False:")
-print(contains_K5(networkx.complete_graph(5)))
-print("Should return False: (not sure)")
-print(contains_K33(networkx.petersen_graph()))
-print("Should return False")
-print(contains_K33(networkx.complete_graph(10)))
+# print("Should return False:")
+# print(contains_K33(networkx.complete_bipartite_graph(3,3)))
+# print("Should return False:")
+# print(contains_K5(networkx.complete_graph(5)))
+# print("Should return False: (not sure)")
+# print(contains_K33(networkx.petersen_graph()))
+# print("Should return False")
+# print(contains_K33(networkx.complete_graph(10)))
