@@ -7,7 +7,9 @@ Created on Thu Mar 24 08:25:11 2022
 import networkx
 import random
 import matplotlib.pyplot as plt
+from numpy import number
 import pandas as pd
+import itertools
 
 
 #  Generalization to make easy to edit the code if it is changed the maximum
@@ -73,7 +75,7 @@ def monitor_interests(graph):
 
 """
 We have n dice with k sides with k being platonic.
-Order is not neccecary so ther are k^n possibilities.
+Order is not neccecary so there are k^n possibilities.
 """
 def luckydraw_table(n):
 
@@ -101,10 +103,35 @@ def luckydraw_table(n):
     return df
 
 
-luckydraw_table(5)
 
-def luckydraw_simulation():
-    return
+def luckydraw_simulation(n, k, v):
+
+    # some platonic solids have either 4, 6, 8, 12 or 20 faces
+    assert (k in [4, 6, 8, 12, 20])
+    
+    # set the number of winners to 0
+    number_of_winners = 0
+
+    # loop for 1000 simulations
+    for _ in range(1000):
+        
+        # reset the total value
+        total = 0
+
+        # loop over the amount of throws
+        for _ in range(n):
+            number = random.randint(1, k)
+            total += number
+        
+        # check if we have a winner
+        if total > v:
+            number_of_winners += 1
+
+    return number_of_winners
+
+# testing
+print(luckydraw_simulation(5, 6, 28))
+
 
 def remove_subdivisions(graph: networkx.Graph):
     
@@ -124,29 +151,38 @@ def remove_subdivisions(graph: networkx.Graph):
 
 def contains_K5(graph: networkx.Graph):
 
-    k5 = networkx.complete_graph(5)    
-    g = remove_subdivisions(graph)
-    
-    return not networkx.is_isomorphic(g, k5) 
+    k5 = networkx.complete_graph(5)
+
+    nodes = graph.nodes
+    for subgraph in (itertools.combinations(nodes, 5)):
+        H = graph.subgraph(list(subgraph))
+        if networkx.is_isomorphic(k5, H):
+            return True
+    return False
+
 
 def contains_K33(graph: networkx.Graph):
 
     k33 = networkx.complete_bipartite_graph(3,3)
-    g = remove_subdivisions(graph)
+    nodes = graph.nodes
+    for subgraph in (itertools.combinations(nodes, 6)):
+        H = graph.subgraph(list(subgraph))
+        if networkx.is_isomorphic(k33, H):
+            return True
+    return False
 
-    return not networkx.is_isomorphic(g, k33)
-
-# # # quick testing
-# G = networkx.Graph()
-# G.add_nodes_from([1, 2, 3, 4])
-# G.add_edges_from([(1,2),(1,3),(1,4),(3,4)])
+# # quick testing
+G = networkx.Graph()
+G.add_nodes_from([1, 2, 3, 4])
+G.add_edges_from([(1,2),(1,3),(1,4),(3,4)])
+contains_K5(G)
 # # #print(remove_subdivisions(G))
 
-# print("Should return False:")
-# print(contains_K33(networkx.complete_bipartite_graph(3,3)))
-# print("Should return False:")
-# print(contains_K5(networkx.complete_graph(5)))
-# print("Should return False: (not sure)")
-# print(contains_K33(networkx.petersen_graph()))
-# print("Should return False")
-# print(contains_K33(networkx.complete_graph(10)))
+print("Should return True:")
+print(contains_K33(networkx.complete_bipartite_graph(3,3)))
+print("Should return True:")
+print(contains_K5(networkx.complete_graph(5)))
+print("Should return False:")
+print(contains_K33(networkx.petersen_graph()))
+print("Should return False")
+print(contains_K33(networkx.complete_graph(10)))
