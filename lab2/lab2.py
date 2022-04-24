@@ -5,8 +5,6 @@ Created on Thu Mar 24 08:25:11 2022
 """
 import networkx
 import random
-import matplotlib.pyplot as plt
-from numpy import number
 import pandas as pd
 import itertools
 
