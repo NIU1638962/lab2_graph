@@ -33,8 +33,11 @@ DELIMITER = "--------------------------------------------------------------"
 
 
 def create_graph(seed: str, n_nodes: int, n_edges: int, n_edges_monitor: int):
+    # By deduction, given that every node only can have 5 interests, the
+    # maximun amount of edges that the graf can have after the
+    # monitor_interest() function is
     assert (n_edges <= (((n_nodes ** 2) - n_nodes) / 2)) and (
-        n_edges_monitor <= ((n_nodes // 2) * 5) and (n_edges_monitor <= n_edges_monitor)
+        n_edges_monitor <= ((n_nodes // 2) * 5)
     ), "Arguments given don't allow the creation of a graph."
     random.seed(seed)
     graph = nx.Graph()
